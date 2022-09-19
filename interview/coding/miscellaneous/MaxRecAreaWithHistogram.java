@@ -1,4 +1,4 @@
-package miscellaneous;
+ package miscellaneous;
 import java.util.Stack;
 public class MaxRecAreaWithHistogram {
     static int getMaxArea(int hist[], int n)
