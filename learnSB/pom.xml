@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.explore</groupId>
-	<artifactId>learn</artifactId>
+	<artifactId>learnSB</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>learn</name>
+	<name>learnSB</name>
 	<description>Spring Boot Application</description>
 	<properties>
 		<java.version>1.8</java.version>
