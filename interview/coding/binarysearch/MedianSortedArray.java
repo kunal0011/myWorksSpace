@@ -1,4 +1,4 @@
-package miscellaneous;
+package binarysearch;
 
 public class MedianSortedArray {
     static double Median(int[] A, int[] B) {
