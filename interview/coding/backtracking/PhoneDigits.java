@@ -43,7 +43,7 @@ public class PhoneDigits {
     }
 
     public static void main(String[] args) {
-        String digits = "23";
+        String digits = "234";
         List<String> words = getWordsFromDigits(digits);
         System.out.println("Possible words: " + words);
 

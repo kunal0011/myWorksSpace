@@ -5,7 +5,7 @@ import java.util.List;
 public class Nqueen {
 
     public static void main(String[] args) {
-        int n = 8; // Example for an 8x8 board
+        int n = 4; // Example for an 8x8 board
         List<List<String>> solutions = solveNQueens(n);
         for (List<String> solution : solutions) {
             for (String row : solution) {
