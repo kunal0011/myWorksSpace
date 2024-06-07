@@ -1,4 +1,4 @@
-package LLD.logger;
+package systemDesign.logger;
 
 public class LoggerMain {
 }
