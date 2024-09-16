@@ -1,6 +1,6 @@
 package amazon;
 
-public class Solution {
+public class ShuffleArray {
     public int[] shuffle(int[] nums, int n) {
         int[] result = new int[2 * n];
         int index = 0;
@@ -16,7 +16,7 @@ public class Solution {
 
     // Testing
     public static void main(String[] args) {
-        Rearrangwwords1451 solution = new Rearrangwwords1451();
+        ShuffleArray solution = new ShuffleArray();
         int[] nums = {2, 5, 1, 3, 4, 7};
         int n = 3;
         int[] result = solution.shuffle(nums, n);
