@@ -3,11 +3,11 @@ package amazon;
 // Definition for a binary tree node.
 class TreeNode1325 {
     int val;
-    TreeNode1325 left;
-    TreeNode1325 right;
+    TreeNode366 left;
+    TreeNode366 right;
     TreeNode1325() {}
     TreeNode1325(int val) { this.val = val; }
-    TreeNode1325(int val, TreeNode1325 left, TreeNode1325 right) {
+    TreeNode1325(int val, TreeNode366 left, TreeNode366 right) {
         this.val = val;
         this.left = left;
         this.right = right;
@@ -15,7 +15,7 @@ class TreeNode1325 {
 }
 
 public class DeleteLeafNodeRecursively1325 {
-    public TreeNode1325 removeLeafNodes(TreeNode1325 root, int target) {
+    public TreeNode366 removeLeafNodes(TreeNode366 root, int target) {
         if (root == null) {
             return null;
         }
@@ -34,18 +34,18 @@ public class DeleteLeafNodeRecursively1325 {
 
     // Testing
     public static void main(String[] args) {
-        TreeNode1325 root = new TreeNode1325(1,
-                new TreeNode1325(2, new TreeNode1325(2), null),
-                new TreeNode1325(3, new TreeNode1325(2), new TreeNode1325(4)));
+        TreeNode366 root = new TreeNode366(1,
+                new TreeNode366(2, new TreeNode366(2), null),
+                new TreeNode366(3, new TreeNode366(2), new TreeNode366(4)));
 
         DeleteLeafNodeRecursively1325 solution = new DeleteLeafNodeRecursively1325();
-        TreeNode1325 newRoot = solution.removeLeafNodes(root, 2);
+        TreeNode366 newRoot = solution.removeLeafNodes(root, 2);
         // Convert the new tree to a list (in-order traversal)
         printTree(newRoot);
     }
 
     // Helper function to print the tree in-order
-    public static void printTree(TreeNode1325 root) {
+    public static void printTree(TreeNode366 root) {
         if (root == null) {
             return;
         }
