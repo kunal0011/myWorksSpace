@@ -9,7 +9,7 @@ sc = SparkContext(conf=conf)
 def some_function(x):
     # Packages are imported and available from your bundled environment.
     import sklearn
-    import pandas
+    import pandas as pd
     import numpy as np
 
     # Use the libraries to do work

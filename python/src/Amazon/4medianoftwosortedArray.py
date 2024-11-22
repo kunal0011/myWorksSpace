@@ -32,3 +32,10 @@ class Solution:
                 high = partitionX - 1
             else:
                 low = partitionX + 1
+
+
+nums1 = [1, 3, 8, 9, 15]
+nums2 = [7, 11, 18, 19, 21, 25]
+s = Solution()
+median = s.findMedianSortedArrays(nums1, nums2)
+print("The median is:", median)
