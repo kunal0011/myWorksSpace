@@ -31,3 +31,39 @@ class Solution:
             i += 1
 
         return result.strip()
+
+def test_solution():
+    """
+    Test driver for numberToWords solution
+    Tests edge cases and regular scenarios:
+    - Zero handling
+    - Single digits
+    - Two digits (below and above 20)
+    - Hundreds
+    - Thousands
+    - Millions
+    - Billions
+    """
+    solution = Solution()
+    test_cases = {
+        0: "Zero",
+        5: "Five",
+        15: "Fifteen",
+        25: "Twenty Five",
+        100: "One Hundred",
+        123: "One Hundred Twenty Three",
+        1000: "One Thousand",
+        12345: "Twelve Thousand Three Hundred Forty Five",
+        1000000: "One Million",
+        1234567: "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven",
+        1000000000: "One Billion"
+    }
+    
+    for num, expected in test_cases.items():
+        result = solution.numberToWords(num)
+        assert result == expected, f"Failed for {num}. Expected '{expected}', but got '{result}'"
+    
+    print("All test cases passed!")
+
+if __name__ == "__main__":
+    test_solution()

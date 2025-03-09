@@ -1,3 +1,19 @@
+"""
+LeetCode 253 - Meeting Rooms II
+
+Problem Statement:
+Given an array of meeting time intervals intervals where intervals[i] = [starti, endi],
+return the minimum number of conference rooms required.
+
+Solution Logic:
+1. Separate start and end times into sorted arrays
+2. Use two pointers approach:
+   - When meeting starts before earliest end -> need new room
+   - When meeting ends -> free up a room
+3. Track maximum rooms needed at any point
+4. Time: O(n log n) for sorting, Space: O(n)
+"""
+
 class Solution:
     def minMeetingRooms(self, intervals):
         if not intervals:
@@ -27,3 +43,33 @@ class Solution:
             max_rooms = max(max_rooms, rooms_needed)
 
         return max_rooms
+
+def test_meeting_rooms():
+    solution = Solution()
+    
+    # Test Case 1: Multiple overlapping meetings
+    intervals1 = [[0,30],[5,10],[15,20]]
+    print("Test 1: Overlapping meetings")
+    print(f"Intervals: {intervals1}")
+    print(f"Minimum rooms needed: {solution.minMeetingRooms(intervals1)}")  # Expected: 2
+    
+    # Test Case 2: No overlap
+    intervals2 = [[7,10],[2,4]]
+    print("\nTest 2: Non-overlapping meetings")
+    print(f"Intervals: {intervals2}")
+    print(f"Minimum rooms needed: {solution.minMeetingRooms(intervals2)}")  # Expected: 1
+    
+    # Test Case 3: Complex overlaps
+    intervals3 = [[1,4],[4,5],[2,3],[3,6]]
+    print("\nTest 3: Complex overlapping pattern")
+    print(f"Intervals: {intervals3}")
+    print(f"Minimum rooms needed: {solution.minMeetingRooms(intervals3)}")  # Expected: 2
+    
+    # Test Case 4: Empty case
+    intervals4 = []
+    print("\nTest 4: No meetings")
+    print(f"Intervals: {intervals4}")
+    print(f"Minimum rooms needed: {solution.minMeetingRooms(intervals4)}")  # Expected: 0
+
+if __name__ == "__main__":
+    test_meeting_rooms()

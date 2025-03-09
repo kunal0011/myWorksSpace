@@ -1,3 +1,32 @@
+"""
+LeetCode 269 - Alien Dictionary (Hard)
+
+There is a new alien language which uses the latin alphabet. However, the order among letters are unknown to you. 
+You receive a list of non-empty words from the dictionary, where words are sorted lexicographically by the rules of this new language. 
+Derive the order of letters in this language.
+
+Example 1:
+Input: words = ["wrt","wrf","er","ett","rftt"]
+Output: "wertf"
+
+Example 2:
+Input: words = ["z","x"]
+Output: "zx"
+
+Example 3:
+Input: words = ["z","x","z"]
+Output: ""
+Explanation: The order is invalid, so return "".
+
+Logic:
+1. Create a graph where each vertex is a character and edge a->b means 'a' comes before 'b'
+2. Build graph by comparing adjacent words character by character
+3. Use Kahn's algorithm (topological sort) to find the order
+4. Handle edge cases:
+   - If word2 is prefix of word1, return "" (invalid)
+   - If graph has cycle, return "" (invalid)
+"""
+
 from collections import defaultdict, deque
 
 
@@ -41,3 +70,29 @@ class Solution:
             return ''.join(order)
         else:
             return ""
+
+
+def test_alien_dictionary():
+    """Test cases for alien dictionary problem"""
+    solution = Solution()
+    
+    # Test case 1: Normal case
+    assert solution.alienOrder(["wrt","wrf","er","ett","rftt"]) == "wertf", "Test case 1 failed"
+    
+    # Test case 2: Simple two-letter case
+    assert solution.alienOrder(["z","x"]) == "zx", "Test case 2 failed"
+    
+    # Test case 3: Invalid order (cycle)
+    assert solution.alienOrder(["z","x","z"]) == "", "Test case 3 failed"
+    
+    # Test case 4: Prefix case
+    assert solution.alienOrder(["abc","ab"]) == "", "Test case 4 failed"
+    
+    # Test case 5: Single letter different positions
+    assert solution.alienOrder(["ac","ab","zc"]) in ["azc", "zac"], "Test case 5 failed"
+    
+    print("All test cases passed!")
+
+
+if __name__ == "__main__":
+    test_alien_dictionary()

@@ -4,33 +4,21 @@ class ListNode:
         self.val = val
         self.next = next
 
-
 class Solution:
     def removeElements(self, head: ListNode, val: int) -> ListNode:
-        # Dummy node to handle edge cases
-        dummy = ListNode(-1)
+        dummy = ListNode(0)
         dummy.next = head
-
-        # Two pointers: prev (starting at dummy), curr (starting at head)
-        prev, curr = dummy, head
-
-        # Traverse the linked list
-        while curr:
-            if curr.val == val:
-                # Skip the current node
-                prev.next = curr.next
+        current = dummy
+        
+        while current.next:
+            if current.next.val == val:
+                current.next = current.next.next
             else:
-                # Move prev pointer to the current node
-                prev = curr
-            # Move curr to the next node
-            curr = curr.next
-
-        # Return the new head of the list
+                current = current.next
+        
         return dummy.next
 
 # Helper function to create linked list from Python list
-
-
 def create_linked_list(arr):
     if not arr:
         return None
@@ -42,8 +30,6 @@ def create_linked_list(arr):
     return head
 
 # Helper function to convert linked list to Python list for easy comparison
-
-
 def linked_list_to_list(head):
     result = []
     current = head
@@ -53,8 +39,6 @@ def linked_list_to_list(head):
     return result
 
 # Test cases
-
-
 def test_remove_elements():
     sol = Solution()
 
@@ -84,7 +68,6 @@ def test_remove_elements():
     assert linked_list_to_list(new_head) == [], "Test Case 4 Failed"
 
     print("All test cases passed!")
-
 
 # Run the tests
 test_remove_elements()

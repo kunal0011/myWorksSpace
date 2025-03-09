@@ -1,3 +1,45 @@
+"""
+LeetCode 353: Design Snake Game
+
+Problem Statement:
+Design a Snake game that is played on a device with screen size height x width. The snake starts at position (0,0) 
+and moves in one of 4 directions: up (U), left (L), right (R), or down (D). The game objective is to collect as 
+much food as possible. When the snake eats the food, its body grows longer. The snake game ends when:
+1. The snake bites its own body, or
+2. The snake hits the screen boundaries
+
+Each piece of food appears at a fixed point on the screen. For example, food = [[1,2], [0,1]] means the first 
+food is at position (1,2), the second is at position (0,1).
+
+Example:
+Given width = 3, height = 2, and food = [[1,2],[0,1]]
+Snake snake = new Snake(width, height, food);
+snake.move("R"); -> Returns 0
+snake.move("D"); -> Returns 0
+snake.move("R"); -> Returns 1 (Snake eats the first food)
+snake.move("U"); -> Returns 1
+snake.move("L"); -> Returns 2 (Snake eats the second food)
+snake.move("U"); -> Returns -1 (Game over because snake hits border)
+
+Logic:
+1. Use a deque to store snake body positions
+   - Head is at index 0
+   - Tail is at last index
+2. Use a set to efficiently check for body collisions
+3. For each move:
+   - Calculate new head position
+   - Check for wall collision
+   - Check for self collision
+   - Check for food
+   - If food found:
+     * Increment score and food index
+     * Don't remove tail (snake grows)
+   - If no food:
+     * Remove tail from both deque and set
+   - Add new head to both deque and set
+4. Return -1 for game over, otherwise return current score
+"""
+
 from collections import deque
 
 
@@ -66,15 +108,68 @@ class SnakeGame:
         return self.score
 
 
-# Test the SnakeGame
-if __name__ == "__main__":
-    # Initialize the game with a grid and food positions
-    game = SnakeGame(3, 3, [[1, 2], [0, 1]])
+def run_test_cases():
+    # Test case 1: Example from problem statement
+    print("Test case 1: Basic game flow")
+    game1 = SnakeGame(3, 2, [[1,2], [0,1]])
+    moves1 = ["R", "D", "R", "U", "L", "U"]
+    expected1 = [0, 0, 1, 1, 2, -1]
+    
+    for i, move in enumerate(moves1):
+        result = game1.move(move)
+        print(f"Move {i+1}: {move}")
+        print(f"Expected: {expected1[i]}")
+        print(f"Got: {result}")
+        print(f"Pass? {result == expected1[i]}\n")
+    
+    # Test case 2: Snake growing and self collision
+    print("\nTest case 2: Snake growing and self collision")
+    game2 = SnakeGame(3, 3, [[0,1], [0,2], [1,2], [1,1]])
+    moves2 = ["R", "R", "D", "L", "L"]  # Snake will collide with itself
+    expected2 = [1, 2, 3, 4, -1]
+    
+    for i, move in enumerate(moves2):
+        result = game2.move(move)
+        print(f"Move {i+1}: {move}")
+        print(f"Expected: {expected2[i]}")
+        print(f"Got: {result}")
+        print(f"Pass? {result == expected2[i]}\n")
+    
+    # Test case 3: Wall collision
+    print("\nTest case 3: Wall collision")
+    game3 = SnakeGame(2, 2, [[0,1]])
+    moves3 = ["R", "U", "U"]  # Snake will hit the wall
+    expected3 = [1, 1, -1]
+    
+    for i, move in enumerate(moves3):
+        result = game3.move(move)
+        print(f"Move {i+1}: {move}")
+        print(f"Expected: {expected3[i]}")
+        print(f"Got: {result}")
+        print(f"Pass? {result == expected3[i]}\n")
+    
+    # Test case 4: No food
+    print("\nTest case 4: Moving without food")
+    game4 = SnakeGame(3, 3, [])
+    moves4 = ["R", "R", "D"]  # No food to eat
+    expected4 = [0, 0, 0]
+    
+    for i, move in enumerate(moves4):
+        result = game4.move(move)
+        print(f"Move {i+1}: {move}")
+        print(f"Expected: {expected4[i]}")
+        print(f"Got: {result}")
+        print(f"Pass? {result == expected4[i]}\n")
+    
+    # Test case 5: Invalid move
+    print("\nTest case 5: Invalid move")
+    game5 = SnakeGame(2, 2, [[0,1]])
+    result = game5.move("X")  # Invalid direction
+    print(f"Move: X")
+    print(f"Expected: -1")
+    print(f"Got: {result}")
+    print(f"Pass? {result == -1}")
 
-    # Test movements
-    print(game.move("R"))  # Output: 0
-    print(game.move("D"))  # Output: 0
-    print(game.move("R"))  # Output: 1 (snake eats food)
-    print(game.move("U"))  # Output: 1
-    print(game.move("L"))  # Output: 2 (snake eats another food)
-    print(game.move("U"))  # Output: -1 (game over: snake hits itself)
+
+if __name__ == "__main__":
+    run_test_cases()
