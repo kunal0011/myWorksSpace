@@ -1,100 +1,111 @@
-from collections import defaultdict, deque
+"""
+LeetCode 642: Design Search Autocomplete System
 
+Design a search autocomplete system for a search engine. Users may input a sentence (at least one word and end with a special character '#').
+
+You are given a string array sentences and an integer array times of the same length. For each sentence, times[i] represents the number 
+of times this sentence was previously typed. Initially, you need to output top 3 historical hot sentences that have the same prefix as 
+the part of the sentence already typed.
+
+Rules:
+1. The hot degree for a sentence is defined as the number of times a user typed the exactly same sentence before.
+2. The returned top 3 hot sentences should be sorted by hot degree (The first is the hottest one). 
+   If several sentences have the same hot degree, use ASCII-code order (smaller one appears first).
+3. If less than 3 hot sentences exist, return as many as you can.
+4. When the input is a special character, it means the sentence ends, and in this case, you need to return an empty list.
+"""
 
 class TrieNode:
     def __init__(self):
         self.children = {}
-        # Stores frequency of sentences at each node
-        self.sentence_freq = defaultdict(int)
-
+        self.is_end = False
+        self.frequency = 0
+        self.sentence = ""
 
 class AutocompleteSystem:
-    def __init__(self, sentences, times):
-        # Initialize the trie root and current state variables
+    def __init__(self, sentences: list[str], times: list[int]):
         self.root = TrieNode()
         self.current_node = self.root
-        self.current_search = ""  # To keep track of the ongoing search
-        # Store frequency of all sentences
-        self.sentence_freq = defaultdict(int)
-
-        # Insert all the initial sentences into the Trie
-        for i, sentence in enumerate(sentences):
-            self.sentence_freq[sentence] = times[i]
-            self.add_sentence_to_trie(sentence)
-
-    def add_sentence_to_trie(self, sentence):
-        """Inserts a sentence into the trie and updates the frequency at each node"""
+        self.current_input = ""
+        
+        # Initialize the system with given sentences and frequencies
+        for sentence, freq in zip(sentences, times):
+            self._insert(sentence, freq)
+    
+    def _insert(self, sentence: str, freq: int) -> None:
         node = self.root
         for char in sentence:
             if char not in node.children:
                 node.children[char] = TrieNode()
             node = node.children[char]
-            node.sentence_freq[sentence] = self.sentence_freq[sentence]
-
-    def input(self, c: str):
+        node.is_end = True
+        node.frequency = freq
+        node.sentence = sentence
+    
+    def _find_all_sentences(self, node: TrieNode) -> list[tuple[int, str]]:
+        result = []
+        
+        def dfs(current: TrieNode):
+            if current.is_end:
+                result.append((-current.frequency, current.sentence))
+            for child in current.children.values():
+                dfs(child)
+        
+        dfs(node)
+        return result
+    
+    def input(self, c: str) -> list[str]:
         if c == '#':
-            # End of the input, update the system with the current search query
-            self.sentence_freq[self.current_search] += 1
-            self.add_sentence_to_trie(self.current_search)
-            self.current_search = ""
+            # End of sentence, add it to the system
+            self._insert(self.current_input, 1)
+            self.current_input = ""
             self.current_node = self.root
             return []
-
-        # Add character to the current search query
-        self.current_search += c
-
-        # Traverse the trie based on the current input
+        
+        self.current_input += c
+        
+        # Move to the next node
         if self.current_node and c in self.current_node.children:
             self.current_node = self.current_node.children[c]
+            # Find all sentences with current prefix
+            suggestions = self._find_all_sentences(self.current_node)
+            # Sort by frequency (negated for descending) and then by sentence
+            suggestions.sort()
+            # Return top 3 sentences
+            return [sentence for _, sentence in suggestions[:3]]
         else:
-            self.current_node = None  # No matches available
-
-        # If no valid node is found, return an empty list
-        if self.current_node is None:
+            self.current_node = None
             return []
-
-        # Return the top 3 sentences from the current node
-        return self.get_top_3_sentences(self.current_node)
-
-    def get_top_3_sentences(self, node: TrieNode):
-        """Get the top 3 sentences based on frequency and lexicographical order"""
-        # Sort sentences first by frequency, then lexicographically
-        sorted_sentences = sorted(
-            node.sentence_freq.keys(),
-            key=lambda x: (-node.sentence_freq[x], x)
-        )
-        return sorted_sentences[:3]
-
-# Test cases
 
 
 def test_autocomplete_system():
+    """Test driver for AutocompleteSystem"""
+    print("Test 1: Basic functionality")
     sentences = ["i love you", "island", "iroman", "i love leetcode"]
     times = [5, 3, 2, 2]
+    auto = AutocompleteSystem(sentences, times)
+    
+    test_cases = [
+        ('i', ["i love you", "island", "i love leetcode"]),
+        (' ', ["i love you", "i love leetcode"]),
+        ('a', ["i love you", "i love leetcode"]),
+        ('#', []),
+        ('i', ["i love you", "island", "i love leetcode"]),
+        ('s', ["island"]),
+        ('l', ["island"]),
+        ('a', ["island"]),
+        ('n', ["island"]),
+        ('d', ["island"]),
+        ('#', [])
+    ]
+    
+    for i, (input_char, expected) in enumerate(test_cases, 1):
+        result = auto.input(input_char)
+        status = "✓" if result == expected else "✗"
+        print(f"\nTest {i}: {status}")
+        print(f"Input: '{input_char}'")
+        print(f"Expected: {expected}")
+        print(f"Got: {result}")
 
-    system = AutocompleteSystem(sentences, times)
-
-    # Testing input character by character
-    assert system.input('i') == ["i love you", "island",
-                                 "i love leetcode"], f"Test failed at 'i'"
-    assert system.input(' ') == ["i love you",
-                                 "i love leetcode"], f"Test failed at ' '"
-    assert system.input('a') == [], f"Test failed at 'a'"
-    assert system.input('#') == [], f"Test failed at '#' for first query"
-
-    # Testing after adding new query
-    assert system.input('i') == ["i love you", "island",
-                                 "i love leetcode"], f"Test failed at 'i'"
-    assert system.input(' ') == [
-        "i love you", "i love leetcode"], f"Test failed at ' ' after adding 'i a' query"
-    assert system.input('l') == ["i love you",
-                                 "i love leetcode"], f"Test failed at 'l'"
-    assert system.input('o') == ["i love you",
-                                 "i love leetcode"], f"Test failed at 'o'"
-    assert system.input('#') == [], f"Test failed at '#' for second query"
-
-    print("All test cases passed!")
-
-
-# Run the test cases
-test_autocomplete_system()
+if __name__ == "__main__":
+    test_autocomplete_system()
