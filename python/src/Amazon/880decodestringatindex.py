@@ -1,43 +1,91 @@
-class Solution:
-    def decodeAtIndex(self, S: str, K: int) -> str:
-        size = 0
+"""
+LeetCode 880: Decoded String at Index
 
-        # First pass: find the length of the fully decoded string
-        for char in S:
+You are given an encoded string s and a target index k. The encoding rule is:
+- If a character is a letter, it remains unchanged
+- If a character is a digit (2-9), it repeats the string up to that point that many times
+
+Return the kth letter (1-indexed) in the decoded string.
+
+Constraints:
+- 2 <= s.length <= 100
+- s consists of lowercase English letters and digits 2-9
+- s starts with a letter
+- 1 <= k <= 10^9
+"""
+
+class Solution:
+    def decodeAtIndex(self, s: str, k: int) -> str:
+        size = 0
+        
+        # Calculate size of decoded string
+        for char in s:
             if char.isdigit():
-                # Multiply the size when we encounter a digit
                 size *= int(char)
             else:
-                size += 1  # Increase the size for each letter
-
-        # Second pass: work backwards to find the K-th character
-        for i in range(len(S) - 1, -1, -1):
-            K %= size  # Reduce K to be within the current size
-
-            if K == 0 and S[i].isalpha():  # If K == 0 and we hit a letter, return it
-                return S[i]
-
-            if S[i].isdigit():
-                size //= int(S[i])  # Divide size by the digit value
+                size += 1
+                
+        # Work backwards from k
+        for char in reversed(s):
+            k %= size  # Get position within current segment
+            
+            if k == 0 and char.isalpha():
+                return char
+                
+            if char.isdigit():
+                size //= int(char)
             else:
-                size -= 1  # Decrease size for each letter
+                size -= 1
 
+def validate_input(s: str, k: int) -> bool:
+    """Validate input according to constraints"""
+    if not (2 <= len(s) <= 100):
+        return False
+    if not s[0].isalpha():
+        return False
+    if not all(c.isalpha() or (c.isdigit() and '2' <= c <= '9') for c in s):
+        return False
+    if not 1 <= k <= 10**9:
+        return False
+    return True
 
-# Test cases
+def test_decoded_string():
+    """Test function for Decoded String at Index"""
+    test_cases = [
+        ("leet2code3", 10, "o"),
+        ("ha22", 5, "h"),
+        ("a2345678999999999999999", 1, "a"),
+        ("abc3", 6, "c"),
+        ("abc2def3", 14, "e"),
+        ("y959q969u3hb22odq595", 222280369, "y")
+    ]
+    
+    solution = Solution()
+    
+    for i, (s, k, expected) in enumerate(test_cases, 1):
+        is_valid = validate_input(s, k)
+        
+        print(f"\nTest case {i}:")
+        print(f"Encoded string: {s}")
+        print(f"Target index k: {k}")
+        
+        if is_valid:
+            result = solution.decodeAtIndex(s, k)
+            print(f"Expected: {expected}")
+            print(f"Result: {result}")
+            print(f"Test passed: {'✓' if result == expected else '✗'}")
+            
+            # Show decoding process for small strings
+            if len(s) < 10:
+                decoded = ""
+                for char in s:
+                    if char.isdigit():
+                        decoded = decoded * int(char)
+                    else:
+                        decoded += char
+                    print(f"After processing '{char}': {decoded[:20]}{'...' if len(decoded) > 20 else ''}")
+        
+        print(f"Valid input: {'✓' if is_valid else '✗'}")
+
 if __name__ == "__main__":
-    sol = Solution()
-
-    # Test case 1
-    S1 = "leet2code3"
-    K1 = 10
-    print(sol.decodeAtIndex(S1, K1))  # Expected output: "o"
-
-    # Test case 2
-    S2 = "ha22"
-    K2 = 5
-    print(sol.decodeAtIndex(S2, K2))  # Expected output: "h"
-
-    # Test case 3
-    S3 = "a2345678999999999999999"
-    K3 = 1
-    print(sol.decodeAtIndex(S3, K3))  # Expected output: "a"
+    test_decoded_string()
