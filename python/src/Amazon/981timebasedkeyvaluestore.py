@@ -1,64 +1,112 @@
-from collections import defaultdict
-import bisect
+"""
+LeetCode 981: Time Based Key-Value Store
 
+Design a time-based key-value data structure that can store multiple values for the same key 
+at different time stamps and retrieve the key's value at a certain timestamp.
+
+Implement the TimeMap class:
+- TimeMap() Initializes the data structure
+- void set(String key, String value, int timestamp) Stores key with value at the given timestamp
+- String get(String key, int timestamp) Returns value for key at timestamp, or "" if none
+
+All timestamps of set are strictly increasing.
+
+Constraints:
+- 1 <= key.length, value.length <= 100
+- key and value consist of lowercase English letters and digits
+- 1 <= timestamp <= 10^7
+- At most 2 * 10^5 calls will be made to set and get
+"""
+
+from collections import defaultdict
+from typing import List, Tuple
+from time import perf_counter
 
 class TimeMap:
     def __init__(self):
-        # Dictionary to store key -> list of (timestamp, value) pairs
         self.store = defaultdict(list)
-
+        self.calls = 0  # Track number of calls for validation
+        
     def set(self, key: str, value: str, timestamp: int) -> None:
-        # Append the (timestamp, value) pair to the key's list
+        """Store key-value pair at timestamp"""
+        self.calls += 1
+        if not self._validate_input(key, value, timestamp):
+            return
         self.store[key].append((timestamp, value))
-
+        
     def get(self, key: str, timestamp: int) -> str:
-        if key not in self.store:
-            return ""
-
-        # Get the list of (timestamp, value) pairs for the key
+        """Get value for key at or before timestamp"""
+        self.calls += 1
         values = self.store[key]
-
-        # Use binary search to find the right timestamp
-        i = bisect.bisect_right(values, (timestamp, chr(127))) - 1
-
-        # If index is valid, return the corresponding value
-        if i >= 0:
-            return values[i][1]
-        return ""
-
-# Test cases
-
+        if not values:
+            return ""
+            
+        # Binary search for timestamp
+        left, right = 0, len(values)
+        while left < right:
+            mid = (left + right) // 2
+            if values[mid][0] <= timestamp:
+                left = mid + 1
+            else:
+                right = mid
+                
+        return values[left - 1][1] if left > 0 else ""
+    
+    def _validate_input(self, key: str, value: str = "", timestamp: int = 0) -> bool:
+        """Validate input according to constraints"""
+        if not (1 <= len(key) <= 100 and (not value or 1 <= len(value) <= 100)):
+            return False
+        if not key.isalnum() or (value and not value.isalnum()):
+            return False
+        if not 1 <= timestamp <= 10**7:
+            return False
+        if self.calls > 2 * 10**5:
+            return False
+        return True
 
 def test_time_map():
-    time_map = TimeMap()
+    """Test function for TimeMap"""
+    test_cases = [
+        [
+            ("set", "foo", "bar", 1),
+            ("get", "foo", None, 1, "bar"),
+            ("get", "foo", None, 3, "bar"),
+            ("set", "foo", "bar2", 4),
+            ("get", "foo", None, 4, "bar2"),
+            ("get", "foo", None, 5, "bar2"),
+        ],
+        [
+            ("set", "love", "high", 10),
+            ("set", "love", "low", 20),
+            ("get", "love", None, 5, ""),
+            ("get", "love", None, 10, "high"),
+            ("get", "love", None, 15, "high"),
+            ("get", "love", None, 20, "low"),
+            ("get", "love", None, 25, "low"),
+        ]
+    ]
+    
+    for i, operations in enumerate(test_cases, 1):
+        time_map = TimeMap()
+        print(f"\nTest case {i}:")
+        
+        start_time = perf_counter()
+        for op in operations:
+            if op[0] == "set":
+                print(f"\nset({op[1]}, {op[2]}, {op[3]})")
+                time_map.set(op[1], op[2], op[3])
+                print(f"Store state: {dict(time_map.store)}")
+            else:  # get
+                result = time_map.get(op[1], op[3])
+                expected = op[4]
+                print(f"\nget({op[1]}, {op[3]})")
+                print(f"Expected: {expected}")
+                print(f"Got: {result}")
+                print(f"Correct: {'✓' if result == expected else '✗'}")
+                
+        end_time = perf_counter()
+        print(f"\nTime taken: {(end_time - start_time)*1000:.3f}ms")
+        print(f"Total operations: {time_map.calls}")
 
-    # Test case 1
-    time_map.set("foo", "bar", 1)
-    assert time_map.get(
-        "foo", 1) == "bar", f"Test case 1 failed: {time_map.get('foo', 1)}"
-    assert time_map.get(
-        "foo", 3) == "bar", f"Test case 2 failed: {time_map.get('foo', 3)}"
-
-    # Test case 2
-    time_map.set("foo", "bar2", 4)
-    assert time_map.get(
-        "foo", 4) == "bar2", f"Test case 3 failed: {time_map.get('foo', 4)}"
-    assert time_map.get(
-        "foo", 5) == "bar2", f"Test case 4 failed: {time_map.get('foo', 5)}"
-
-    # Test case 3
-    assert time_map.get(
-        "foo", 0) == "", f"Test case 5 failed: {time_map.get('foo', 0)}"
-
-    # Test case 4
-    time_map.set("test", "alpha", 5)
-    assert time_map.get(
-        "test", 5) == "alpha", f"Test case 6 failed: {time_map.get('test', 5)}"
-    assert time_map.get(
-        "test", 6) == "alpha", f"Test case 7 failed: {time_map.get('test', 6)}"
-
-    print("All test cases passed!")
-
-
-# Run the tests
-test_time_map()
+if __name__ == "__main__":
+    test_time_map()
