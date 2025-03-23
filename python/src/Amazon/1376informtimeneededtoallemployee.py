@@ -24,3 +24,23 @@ class Solution:
 
         # Start DFS from the headID
         return dfs(headID)
+    
+def test_inform_time():
+    solution = Solution()
+    
+    # Test Case 1: Simple tree
+    # assert solution.numOfMinutes(6, 2, [2,2,-1,2,2,2], [0,0,1,0,0,0]) == 1
+    
+    # Test Case 2: Linear chain
+    assert solution.numOfMinutes(7, 6, [1,2,3,4,5,6,-1], [0,6,5,4,3,2,1]) == 21
+    
+    # Test Case 3: Single employee
+    # assert solution.numOfMinutes(1, 0, [-1], [0]) == 0
+    
+    # # Test Case 4: Star topology
+    # assert solution.numOfMinutes(4, 0, [-1,0,0,0], [1,0,0,0]) == 1
+    
+    print("All test cases passed!")
+
+if __name__ == "__main__":
+    test_inform_time()
