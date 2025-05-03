@@ -1,3 +1,22 @@
+"""
+LeetCode 542 - 01 Matrix
+
+Given an m x n binary matrix mat, return the distance of the nearest 0 for each cell.
+The distance between two adjacent cells is 1.
+
+Logic:
+1. Initialize a distance matrix with infinity for all cells
+2. Add all cells with value 0 to a queue with distance 0
+3. Use BFS to update distances:
+   - For each cell in queue, check its 4 adjacent neighbors
+   - If a neighbor's current distance is greater than current cell's distance + 1,
+     update it and add to queue
+4. The final matrix will have shortest distance to nearest 0 for each cell
+
+Time Complexity: O(m*n) where m,n are dimensions of matrix
+Space Complexity: O(m*n) for the distance matrix and queue
+"""
+
 from collections import deque
 from typing import List
 
@@ -33,3 +52,59 @@ class Solution:
                         queue.append((nr, nc))
 
         return dist
+
+
+def run_test_cases():
+    solution = Solution()
+    test_cases = [
+        {
+            "matrix": [
+                [0, 0, 0],
+                [0, 1, 0],
+                [0, 0, 0]
+            ],
+            "expected": [
+                [0, 0, 0],
+                [0, 1, 0],
+                [0, 0, 0]
+            ],
+            "explanation": "The cell at (1,1) has distance 1 to nearest 0"
+        },
+        {
+            "matrix": [
+                [0, 0, 0],
+                [0, 1, 0],
+                [1, 1, 1]
+            ],
+            "expected": [
+                [0, 0, 0],
+                [0, 1, 0],
+                [1, 2, 1]
+            ],
+            "explanation": "The cells at (2,0) and (2,2) have distance 1, (2,1) has distance 2"
+        },
+        {
+            "matrix": [[0], [1]],
+            "expected": [[0], [1]],
+            "explanation": "Single column matrix"
+        }
+    ]
+
+    for i, test in enumerate(test_cases, 1):
+        result = solution.updateMatrix(test["matrix"])
+        print(f"\nTest Case {i}:")
+        print("Input Matrix:")
+        for row in test["matrix"]:
+            print(row)
+        print("\nExpected Output:")
+        for row in test["expected"]:
+            print(row)
+        print("\nActual Output:")
+        for row in result:
+            print(row)
+        print(f"Explanation: {test['explanation']}")
+        print(f"{'✓ Passed' if result == test['expected'] else '✗ Failed'}")
+
+
+if __name__ == "__main__":
+    run_test_cases()
