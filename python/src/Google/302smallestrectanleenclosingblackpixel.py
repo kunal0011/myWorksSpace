@@ -1,47 +1,71 @@
-from typing import List
+"""
+LeetCode 302 - Smallest Rectangle Enclosing Black Pixels
 
-# You are given a 2D grid image where each cell is either black (1) or white (0). You are also given a starting pixel (sr, sc) that is guaranteed to be black. The task is to find the area of the smallest rectangle that can enclose all black pixels in the grid, using the starting pixel as a part of the rectangle.
-# Define Binary Search Functions:
+Problem Statement:
+You are given an m x n binary matrix image where 0 represents a white pixel and 1 represents a black pixel.
+The black pixels are connected (i.e., there is only one black region).
+Pixels are connected horizontally and vertically.
+Given two integers x and y that represents the location of one of the black pixels,
+return the area of the smallest (axis-aligned) rectangle that encloses all black pixels.
 
-# Find Left Bound: Binary search to find the leftmost column that contains black pixels.
-# Find Right Bound: Binary search to find the rightmost column that contains black pixels.
-# Find Top Bound: Binary search to find the topmost row that contains black pixels.
-# Find Bottom Bound: Binary search to find the bottommost row that contains black pixels.
-# Binary Search Implementation:
+Time Complexity: O(m * log n + n * log m) where m and n are dimensions of the matrix
+Space Complexity: O(1)
+"""
 
-# For each search function, adjust the search space based on whether the middle column or row contains black pixels.
+def minArea(image, x, y):
+    if not image or not image[0]:
+        return 0
+    
+    m, n = len(image), len(image[0])
+    
+    def searchColumns(i, j, top, option):
+        while i < j:
+            mid = (i + j) // 2
+            found = False
+            
+            # Search this column for any black pixel
+            for k in range(m):
+                if image[k][mid] == '1':
+                    found = True
+                    break
+            
+            if found == option:
+                j = mid
+            else:
+                i = mid + 1
+        return i
+    
+    def searchRows(i, j, left, option):
+        while i < j:
+            mid = (i + j) // 2
+            found = False
+            
+            # Search this row for any black pixel
+            for k in range(n):
+                if image[mid][k] == '1':
+                    found = True
+                    break
+            
+            if found == option:
+                j = mid
+            else:
+                i = mid + 1
+        return i
+    
+    # Binary search for boundaries
+    left = searchColumns(0, y, True, True)
+    right = searchColumns(y + 1, n, False, False)
+    top = searchRows(0, x, True, True)
+    bottom = searchRows(x + 1, m, False, False)
+    
+    return (right - left) * (bottom - top)
 
-
-class Solution:
-    def minArea(self, image: List[List[str]], sr: int, sc: int) -> int:
-        def has_black_pixel(x1, x2, y):
-            return any(image[x][y] == '1' for x in range(x1, x2 + 1))
-
-        def has_black_pixel_col(x, y1, y2):
-            return any(image[x][y] == '1' for y in range(y1, y2 + 1))
-
-        def binary_search_row(low, high, fixed_col, target_row, find_min):
-            while low < high:
-                mid = (low + high) // 2
-                if has_black_pixel(mid, mid, fixed_col):
-                    high = mid if find_min else mid - 1
-                else:
-                    low = mid + 1 if find_min else mid - 1
-            return low
-
-        def binary_search_col(low, high, fixed_row, target_col, find_min):
-            while low < high:
-                mid = (low + high) // 2
-                if has_black_pixel(fixed_row, fixed_row, mid):
-                    high = mid if find_min else mid - 1
-                else:
-                    low = mid + 1 if find_min else mid - 1
-            return low
-
-        rows, cols = len(image), len(image[0])
-        top = binary_search_row(0, sr, sc, sr, True)
-        bottom = binary_search_row(sr, rows - 1, sc, sr, False)
-        left = binary_search_col(0, sc, sr, sc, True)
-        right = binary_search_col(sc, cols - 1, sr, sc, False)
-
-        return (bottom - top + 1) * (right - left + 1)
+# Example usage
+if __name__ == "__main__":
+    image = [
+        "0010",
+        "0110",
+        "0100"
+    ]
+    x, y = 0, 2  # One of the black pixels
+    print(f"Smallest rectangle area: {minArea(image, x, y)}")  # Output: 6

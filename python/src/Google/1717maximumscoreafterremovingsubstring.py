@@ -1,24 +1,38 @@
 class Solution:
-    def maximumGain(self, s: str, x: int, y: int) -> int:
-        # Strategy: Remove substrings greedily
-        # Process higher point substring first to maximize the score
+    def maximumScore(self, s: str, a: str, x: int, b: str, y: int) -> int:
+        """
+        Calculates the maximum score by removing substrings a and b from s.
 
-        def remove_pair(s, first, second, points):
+        Args:
+            s: The input string.
+            a: The first substring to remove.
+            x: The score for removing substring a.
+            b: The second substring to remove.
+            y: The score for removing substring b.
+
+        Returns:
+            The maximum score achievable.
+        """
+
+        def solve(s, first, first_score, second, second_score):
+            """Helper function to calculate the score given a specific order."""
             stack = []
             score = 0
             for char in s:
-                if stack and stack[-1] == first and char == second:
-                    stack.pop()
-                    score += points
-                else:
-                    stack.append(char)
-            return score, ''.join(stack)
+                stack.append(char)
+                while len(stack) >= 2:
+                    top = stack[-2] + stack[-1]
+                    if top == first:
+                        score += first_score
+                        stack.pop()
+                        stack.pop()
+                    elif top == second:
+                        score += second_score
+                        stack.pop()
+                        stack.pop()
+                    else:
+                        break  # No match, stop checking
+            return score
 
-        if x >= y:
-            score1, leftover = remove_pair(s, 'a', 'b', x)
-            score2, _ = remove_pair(leftover, 'b', 'a', y)
-        else:
-            score1, leftover = remove_pair(s, 'b', 'a', y)
-            score2, _ = remove_pair(leftover, 'a', 'b', x)
-
-        return score1 + score2
+        # Try both removal orders to find the maximum score
+        return max(solve(s, a, x, b, y), solve(s, b, y, a, x))

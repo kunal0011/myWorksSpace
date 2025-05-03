@@ -1,3 +1,21 @@
+"""
+LeetCode 347 - Top K Frequent Elements
+
+Given an integer array nums and an integer k, return the k most frequent elements. 
+You may return the answer in any order.
+
+Example 1:
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+
+Example 2:
+Input: nums = [1], k = 1
+Output: [1]
+
+Time Complexity: O(n log k) where n is the length of nums
+Space Complexity: O(n) for storing the frequency counter
+"""
+
 from collections import Counter
 import heapq
 from typing import List
@@ -23,5 +41,33 @@ class Solution:
         return result
 
 
-s = Solution()
-print(s.topKFrequent([1, 1, 1, 2, 2, 3], 2))
+def test_top_k_frequent():
+    # Test cases
+    test_cases = [
+        ([1, 1, 1, 2, 2, 3], 2),
+        ([1], 1),
+        ([1, 2, 2, 3, 3, 3], 2),
+        ([4, 1, -1, 2, -1, 2, 3], 2),
+        ([1, 1, 1, 2, 2, 2, 3, 3, 3], 3),
+    ]
+
+    expected_outputs = [
+        [1, 2],
+        [1],
+        [2, 3],
+        [2, -1],
+        [1, 2, 3],
+    ]
+
+    solution = Solution()
+    for i, ((nums, k), expected) in enumerate(zip(test_cases, expected_outputs)):
+        result = solution.topKFrequent(nums, k)
+        print(f"Test case {i + 1}:")
+        print(f"Input: nums = {nums}, k = {k}")
+        print(f"Expected: {sorted(expected)}")
+        print(f"Got: {sorted(result)}")
+        print(f"{'✓ Passed' if sorted(result) == sorted(expected) else '✗ Failed'}\n")
+
+
+if __name__ == "__main__":
+    test_top_k_frequent()
