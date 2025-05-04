@@ -1,3 +1,15 @@
+"""
+LeetCode 1423: Maximum Points You Can Obtain from Cards
+
+There are several cards arranged in a row, and each card has an associated number of points.
+In one step, you can take one card from the beginning or from the end of the row.
+You have to take exactly k cards.
+Your score is the sum of the points of the cards you have taken.
+Given the integer array cardPoints and the integer k, return the maximum score you can obtain.
+
+Time Complexity: O(k)
+Space Complexity: O(1)
+"""
 from typing import List
 
 
@@ -21,13 +33,28 @@ class Solution:
 
         # The maximum score is the total sum minus the minimum subarray sum
         return total_sum - min_window_sum
-# Instead of directly picking k cards from the beginning or end, you can think about the problem in a complementary way:
 
-# Instead of finding the maximum k cards from either end, find the minimum sum of the n-k cards in the middle (since you can only pick cards from the beginning or end).
-# The idea is that the sum of the k cards you pick is the total sum of all cards minus the sum of the n-k cards that you do not pick.
-# The problem then reduces to finding the minimum sum of a subarray of length n-k.
-# Steps:
-# Calculate the total sum of all cards.
-# Calculate the sum of the first n-k cards.
-# Slide this window across the array from the start to the end, updating the minimum sum found.
-# The result is the total sum of all cards minus the minimum sum of the n-k subarray.
+
+def test_max_score():
+    solution = Solution()
+
+    # Test case 1
+    cardPoints1 = [1, 2, 3, 4, 5, 6, 1]
+    k1 = 3
+    assert solution.maxScore(cardPoints1, k1) == 12, "Test case 1 failed"
+
+    # Test case 2
+    cardPoints2 = [2, 2, 2]
+    k2 = 2
+    assert solution.maxScore(cardPoints2, k2) == 4, "Test case 2 failed"
+
+    # Test case 3
+    cardPoints3 = [9, 7, 7, 9, 7, 7, 9]
+    k3 = 7
+    assert solution.maxScore(cardPoints3, k3) == 55, "Test case 3 failed"
+
+    print("All test cases passed!")
+
+
+if __name__ == "__main__":
+    test_max_score()
