@@ -1,5 +1,12 @@
 from typing import List
 
+"""
+LeetCode 2055: Plates Between Candles
+Problem: Given a string s consisting of '*' and '|' only, and queries [lefti, righti],
+count the number of plates ('*') between candles ('|') within each query range.
+Logic: Use prefix sum for plates and maintain left/right nearest candle arrays for O(1) query time.
+"""
+
 
 class Solution:
     def platesBetweenCandles(self, s: str, queries: List[List[int]]) -> List[int]:
@@ -48,3 +55,25 @@ class Solution:
                 result.append(0)
 
         return result
+
+# Test driver
+
+
+def test_solution():
+    sol = Solution()
+    test_cases = [
+        ("**|**|***|", [[2, 5], [5, 9]]),
+        ("|**|*|*", [[1, 4], [0, 6]]),
+        ("***|**|*****|**||**|*",
+         [[1, 17], [4, 5], [14, 17], [5, 11], [15, 16]])
+    ]
+
+    for s, queries in test_cases:
+        print(f"\nTest Case:")
+        print(f"Input String: {s}")
+        print(f"Queries: {queries}")
+        print(f"Output: {sol.platesBetweenCandles(s, queries)}")
+
+
+if __name__ == "__main__":
+    test_solution()
